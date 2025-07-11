@@ -6,11 +6,11 @@ namespace ProductApi.Application.Products.Commands.CreateProduct;
 
 public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Guid>
 {
-    private readonly IProductRepository _repository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public CreateProductCommandHandler(IProductRepository repository)
+    public CreateProductCommandHandler(IUnitOfWork unitOfWork)
     {
-        _repository = repository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
@@ -24,8 +24,9 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
             Description = request.Description,
             Price = request.Price
         };
+        await _unitOfWork.Products.AddAsync(product);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        await _repository.AddAsync(product);
         return product.ProductId;
     }
 }

@@ -1,4 +1,9 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using ProductApi.Application.Products.Commands.CreateProduct;
+using ProductApi.Application.Products.Commands.UpdateProduct;
+using ProductApi.Application.Products.Queries.GetProductById;
+using ProductApi.Application.Products.Dtos;
 
 namespace ProductApi.Controllers;
 
@@ -6,82 +11,37 @@ namespace ProductApi.Controllers;
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
-    private static readonly List<Product> _products = new()
-    {
-        new Product { Id = 1, Name = "Laptop", Price = 999.99m, Description = "Laptop de alta gama" },
-        new Product { Id = 2, Name = "Mouse", Price = 29.99m, Description = "Mouse inalámbrico" },
-        new Product { Id = 3, Name = "Teclado", Price = 79.99m, Description = "Teclado mecánico" }
-    };
+    private readonly IMediator _mediator;
 
-    // GET: api/products
-    [HttpGet]
-    public ActionResult<IEnumerable<Product>> GetProducts()
+    public ProductsController(IMediator mediator)
     {
-        return Ok(_products);
+        _mediator = mediator;
     }
 
-    // GET: api/products/5
-    [HttpGet("{id}")]
-    public ActionResult<Product> GetProduct(int id)
-    {
-        var product = _products.FirstOrDefault(p => p.Id == id);
-        
-        if (product == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(product);
-    }
-
-    // POST: api/products
     [HttpPost]
-    public ActionResult<Product> CreateProduct(Product product)
+    public async Task<ActionResult<Guid>> Create([FromBody] CreateProductCommand command)
     {
-        if (product.Id != 0)
-        {
-            return BadRequest("El ID debe ser 0 para crear un nuevo producto");
-        }
-
-        product.Id = _products.Count > 0 ? _products.Max(p => p.Id) + 1 : 1;
-        _products.Add(product);
-
-        return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+        var productId = await _mediator.Send(command);
+        return CreatedAtAction(nameof(GetById), new { id = productId }, productId);
     }
 
-    // PUT: api/products/5
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ProductDto>> GetById(Guid id)
+    {
+        var result = await _mediator.Send(new GetProductByIdQuery(id));
+        if (result == null)
+            return NotFound();
+
+        return Ok(result);
+    }
+
     [HttpPut("{id}")]
-    public IActionResult UpdateProduct(int id, Product product)
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductCommand command)
     {
-        if (id != product.Id)
-        {
-            return BadRequest();
-        }
+        if (id != command.ProductId)
+            return BadRequest("ID in route does not match ID in body");
 
-        var existingProduct = _products.FirstOrDefault(p => p.Id == id);
-        if (existingProduct == null)
-        {
-            return NotFound();
-        }
-
-        existingProduct.Name = product.Name;
-        existingProduct.Price = product.Price;
-        existingProduct.Description = product.Description;
-
+        await _mediator.Send(command);
         return NoContent();
     }
-
-    // DELETE: api/products/5
-    [HttpDelete("{id}")]
-    public IActionResult DeleteProduct(int id)
-    {
-        var product = _products.FirstOrDefault(p => p.Id == id);
-        if (product == null)
-        {
-            return NotFound();
-        }
-
-        _products.Remove(product);
-        return NoContent();
-    }
-} 
+}

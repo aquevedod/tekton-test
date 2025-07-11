@@ -7,18 +7,23 @@ namespace ProductApi.Application.Products.Queries.GetProductById;
 
 public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, ProductDto>
 {
-    private readonly IProductRepository _repository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IDiscountService _discountService;
+    private readonly IProductStatusCache _statusCache;
 
-    public GetProductByIdQueryHandler(IProductRepository repository, IDiscountService discountService)
+    public GetProductByIdQueryHandler(
+        IUnitOfWork unitOfWork,
+        IDiscountService discountService,
+        IProductStatusCache statusCache)
     {
-        _repository = repository;
+        _unitOfWork = unitOfWork;
         _discountService = discountService;
+        _statusCache = statusCache;
     }
 
     public async Task<ProductDto> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
     {
-        var product = await _repository.GetByIdAsync(request.ProductId);
+        var product = await _unitOfWork.Products.GetByIdAsync(request.ProductId);
         if (product == null) return null;
 
         var discount = await _discountService.GetDiscountByProductId(product.ProductId);
@@ -27,7 +32,7 @@ public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, P
         {
             ProductId = product.ProductId,
             Name = product.Name,
-            StatusName = ProductStatuses.GetStatusName(product.Status),
+            StatusName = _statusCache.GetStatusName(product.Status),
             Stock = product.Stock,
             Description = product.Description,
             Price = product.Price,
