@@ -19,14 +19,14 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Guid>> Create([FromBody] CreateProductCommand command)
+    public async Task<ActionResult<int>> Create([FromBody] CreateProductCommand command)
     {
         var productId = await _mediator.Send(command);
         return CreatedAtAction(nameof(GetById), new { id = productId }, productId);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ProductDto>> GetById(Guid id)
+    public async Task<ActionResult<ProductDto>> GetById(int id)
     {
         var result = await _mediator.Send(new GetProductByIdQuery(id));
         if (result == null)
@@ -36,7 +36,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductCommand command)
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateProductCommand command)
     {
         if (id != command.ProductId)
             return BadRequest("ID in route does not match ID in body");

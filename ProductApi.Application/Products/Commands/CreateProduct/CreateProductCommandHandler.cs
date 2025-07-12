@@ -4,7 +4,7 @@ using ProductApi.Application.Interfaces;
 
 namespace ProductApi.Application.Products.Commands.CreateProduct;
 
-public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Guid>
+public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, int>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -13,11 +13,10 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
         var product = new Product
         {
-            ProductId = Guid.NewGuid(),
             Name = request.Name,
             Status = request.Status,
             Stock = request.Stock,

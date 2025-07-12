@@ -4,7 +4,7 @@ namespace ProductApi.Application.Products.Commands.UpdateProduct;
 
 public class UpdateProductCommand : IRequest
 {
-    public Guid ProductId { get; set; }
+    public int ProductId { get; set; }
     public string Name { get; set; } = default!;
     public int Status { get; set; }
     public int Stock { get; set; }

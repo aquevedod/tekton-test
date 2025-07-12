@@ -16,6 +16,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Product>(entity =>
         {
             entity.HasKey(p => p.ProductId);
+            entity.Property(p => p.ProductId).ValueGeneratedOnAdd();
             entity.Property(p => p.Name).IsRequired().HasMaxLength(100);
             entity.Property(p => p.Status).IsRequired();
             entity.Property(p => p.Stock).IsRequired();

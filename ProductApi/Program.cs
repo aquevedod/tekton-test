@@ -9,8 +9,13 @@ using ProductApi.Infrastructure.Repositories;
 using ProductApi.Application.Interfaces;
 using ProductApi.Infrastructure.Caching;
 using ProductApi.Infrastructure.ExternalServices;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Log para diagnosticar la configuración
+var discountServiceUrl = builder.Configuration["ExternalServices:DiscountService:BaseUrl"];
+Console.WriteLine($"Configuración cargada - BaseUrl: {discountServiceUrl}");
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -28,6 +33,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddMediatR(Assembly.Load("ProductApi.Application"));
 
+// Configurar FluentValidation
+builder.Services.AddFluentValidationAutoValidation();
+
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IProductStatusCache, ProductStatusCache>();
@@ -35,9 +43,11 @@ builder.Services.AddScoped<IProductStatusCache, ProductStatusCache>();
 builder.Services.Configure<DiscountServiceOptions>(
     builder.Configuration.GetSection(DiscountServiceOptions.SectionName));
 
-builder.Services.AddScoped<IDiscountService, MockDiscountService>();
+builder.Services.AddHttpClient<IDiscountService, DiscountService>();
 
 builder.Services.AddMemoryCache();
+
+builder.Services.AddSingleton<Serilog.ILogger>(Log.Logger);
 
 var app = builder.Build();
 

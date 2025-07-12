@@ -2,7 +2,7 @@ namespace ProductApi.Domain.Entities;
 
 public class Product
 {
-    public Guid ProductId { get; set; }
+    public int ProductId { get; set; }
     public string Name { get; set; } = default!;
     public int Status { get; set; }
     public int Stock { get; set; }

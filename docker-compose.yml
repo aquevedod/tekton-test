@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  productapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+      - "8443:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80;https://+:443
+    volumes:
+      - ./Logs:/app/Logs
+    networks:
+      - productapi-network
+
+networks:
+  productapi-network:
+    driver: bridge 

@@ -5,10 +5,10 @@ namespace ProductApi.Application.Products.Queries.GetProductById;
 
 public class GetProductByIdQuery : IRequest<ProductDto>
 {
-    public Guid ProductId { get; set; }
+    public int ProductId { get; set; }
 
-    public GetProductByIdQuery(Guid productId)
+    public GetProductByIdQuery(int productId)
     {
         ProductId = productId;
     }
-}
+} 

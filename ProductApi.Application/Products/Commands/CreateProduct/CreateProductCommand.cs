@@ -2,7 +2,7 @@ using MediatR;
 
 namespace ProductApi.Application.Products.Commands.CreateProduct;
 
-public class CreateProductCommand : IRequest<Guid>
+public class CreateProductCommand : IRequest<int>
 {
     public string Name { get; set; } = default!;
     public int Status { get; set; }

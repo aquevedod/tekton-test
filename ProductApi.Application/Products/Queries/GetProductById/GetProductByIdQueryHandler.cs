@@ -40,4 +40,4 @@ public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, P
             FinalPrice = product.Price * (100 - discount) / 100
         };
     }
-}
+} 

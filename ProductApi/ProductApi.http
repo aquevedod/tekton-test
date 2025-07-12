@@ -1,6 +1,30 @@
 @ProductApi_HostAddress = http://localhost:5125
 
-GET {{ProductApi_HostAddress}}/weatherforecast/
+### Crear un producto
+POST {{ProductApi_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Producto de Prueba",
+  "status": 1,
+  "stock": 100,
+  "description": "Descripción del producto de prueba",
+  "price": 99.99
+}
+
+### Obtener un producto por ID
+GET {{ProductApi_HostAddress}}/api/products/1
 Accept: application/json
 
-###
+### Actualizar un producto
+PUT {{ProductApi_HostAddress}}/api/products/1
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "name": "Producto Actualizado",
+  "status": 1,
+  "stock": 50,
+  "description": "Descripción actualizada",
+  "price": 89.99
+}
