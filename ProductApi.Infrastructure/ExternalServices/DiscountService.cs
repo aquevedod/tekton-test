@@ -3,6 +3,7 @@ using ProductApi.Application.Interfaces;
 using ProductApi.Infrastructure.ExternalServices.Models;
 using Serilog;
 using System.Net.Http.Json;
+using Microsoft.Extensions.Logging;
 
 namespace ProductApi.Infrastructure.ExternalServices;
 
@@ -10,19 +11,19 @@ public class DiscountService : IDiscountService
 {
     private readonly HttpClient _httpClient;
     private readonly DiscountServiceOptions _options;
-    private readonly ILogger _logger;
+    private readonly ILogger<DiscountService> _logger;
 
     public DiscountService(
         HttpClient httpClient,
         IOptions<DiscountServiceOptions> options,
-        ILogger logger)
+        ILogger<DiscountService> logger)
     {
         _httpClient = httpClient;
         _options = options.Value;
         _logger = logger;
         
         // Log para diagnosticar qué valor se está tomando
-        _logger.Information("DiscountService inicializado con BaseUrl: {BaseUrl}", _options.BaseUrl);
+        _logger.LogInformation("DiscountService inicializado con BaseUrl: {BaseUrl}", _options.BaseUrl);
     }
 
     public async Task<decimal> GetDiscountByProductId(int productId)
@@ -30,7 +31,7 @@ public class DiscountService : IDiscountService
         try
         {
             var url = $"{_options.BaseUrl}/{productId}";
-            _logger.Information("Haciendo request a: {Url}", url);
+            _logger.LogInformation("Haciendo request a: {Url}", url);
             
             var response = await _httpClient.GetFromJsonAsync<DiscountResponse>(url);
 
@@ -38,7 +39,7 @@ public class DiscountService : IDiscountService
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Error al obtener descuento para el producto {ProductId} desde la API externa", productId);
+            _logger.LogError(ex, "Error al obtener descuento para el producto {ProductId} desde la API externa", productId);
             return 0;
         }
     }
