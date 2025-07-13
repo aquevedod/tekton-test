@@ -1,5 +1,4 @@
 using Serilog;
-using Serilog.Events;
 using System.Diagnostics;
 using MediatR;
 using System.Reflection;
@@ -17,12 +16,12 @@ var builder = WebApplication.CreateBuilder(args);
 var discountServiceUrl = builder.Configuration["ExternalServices:DiscountService:BaseUrl"];
 Console.WriteLine($"Configuración cargada - BaseUrl: {discountServiceUrl}");
 
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Debug()
-    .WriteTo.File("Logs/requests.txt", rollingInterval: RollingInterval.Day)
+// Logger específico para tiempos de respuesta
+var performanceLogger = new LoggerConfiguration()
+    .WriteTo.File("Logs/performance.txt", 
+        rollingInterval: RollingInterval.Day,
+        outputTemplate: "{Message}{NewLine}")
     .CreateLogger();
-
-builder.Host.UseSerilog();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -47,7 +46,7 @@ builder.Services.AddHttpClient<IDiscountService, DiscountService>();
 
 builder.Services.AddMemoryCache();
 
-builder.Services.AddSingleton<Serilog.ILogger>(Log.Logger);
+builder.Services.AddKeyedSingleton<Serilog.ILogger>("PerformanceLogger", performanceLogger);
 
 var app = builder.Build();
 
@@ -58,9 +57,11 @@ app.Use(async (context, next) =>
     stopwatch.Stop();
 
     var elapsedMs = stopwatch.ElapsedMilliseconds;
-    var logMessage = $"[{DateTime.Now}] {context.Request.Method} {context.Request.Path} responded {context.Response.StatusCode} in {elapsedMs} ms";
+    var logMessage = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {context.Request.Method} {context.Request.Path} responded {context.Response.StatusCode} in {elapsedMs} ms";
 
-    Log.Information(logMessage);
+    // Usar el logger de performance específico
+    var performanceLogger = context.RequestServices.GetKeyedService<Serilog.ILogger>("PerformanceLogger");
+    performanceLogger?.Information(logMessage);
 });
 
 
