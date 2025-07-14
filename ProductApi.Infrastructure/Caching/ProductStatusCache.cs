@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Caching.Memory;
 using ProductApi.Application.Interfaces;
+using ProductApi.Domain.Constants;
 
 namespace ProductApi.Infrastructure.Caching;
 
@@ -19,12 +20,7 @@ public class ProductStatusCache : IProductStatusCache
         {
             return cachedStatuses!;
         }
-
-        var statusMap = new Dictionary<int, string>
-        {
-            { 1, "Active" },
-            { 0, "Inactive" }
-        };
+        var statusMap = ProductStatus.StatusMap;
 
         _cache.Set(CacheKey, statusMap, TimeSpan.FromMinutes(5));
         return statusMap;

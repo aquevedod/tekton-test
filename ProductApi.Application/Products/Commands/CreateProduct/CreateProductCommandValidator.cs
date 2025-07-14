@@ -7,20 +7,20 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
     public CreateProductCommandValidator()
     {
         RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("El nombre del producto es obligatorio")
-            .MaximumLength(100).WithMessage("El nombre no puede exceder 100 caracteres");
+            .NotEmpty().WithMessage("Product name is required")
+            .MaximumLength(100).WithMessage("Product name cannot exceed 100 characters");
 
         RuleFor(x => x.Status)
-            .InclusiveBetween(0, 1).WithMessage("El estado debe ser 0 (Inactivo) o 1 (Activo)");
+            .InclusiveBetween(0, 1).WithMessage("Status must be 0 (Inactive) or 1 (Active)");
 
         RuleFor(x => x.Stock)
-            .GreaterThanOrEqualTo(0).WithMessage("El stock no puede ser negativo");
+            .GreaterThanOrEqualTo(0).WithMessage("Stock cannot be negative");
 
         RuleFor(x => x.Description)
-            .NotEmpty().WithMessage("La descripción es obligatoria")
-            .MaximumLength(500).WithMessage("La descripción no puede exceder 500 caracteres");
+            .NotEmpty().WithMessage("Description is required")
+            .MaximumLength(500).WithMessage("Description cannot exceed 500 characters");
 
         RuleFor(x => x.Price)
-            .GreaterThan(0).WithMessage("El precio debe ser mayor a 0");
+            .GreaterThan(0).WithMessage("Price must be greater than 0");
     }
 } 

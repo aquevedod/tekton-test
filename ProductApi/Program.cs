@@ -12,11 +12,7 @@ using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Log para diagnosticar la configuración
 var discountServiceUrl = builder.Configuration["ExternalServices:DiscountService:BaseUrl"];
-Console.WriteLine($"Configuración cargada - BaseUrl: {discountServiceUrl}");
-
-// Logger específico para tiempos de respuesta
 var performanceLogger = new LoggerConfiguration()
     .WriteTo.File("Logs/performance.txt", 
         rollingInterval: RollingInterval.Day,
@@ -32,7 +28,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddMediatR(Assembly.Load("ProductApi.Application"));
 
-// Configurar FluentValidation
 builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -59,12 +54,9 @@ app.Use(async (context, next) =>
     var elapsedMs = stopwatch.ElapsedMilliseconds;
     var logMessage = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {context.Request.Method} {context.Request.Path} responded {context.Response.StatusCode} in {elapsedMs} ms";
 
-    // Usar el logger de performance específico
     var performanceLogger = context.RequestServices.GetKeyedService<Serilog.ILogger>("PerformanceLogger");
     performanceLogger?.Information(logMessage);
 });
-
-
 
 if (app.Environment.IsDevelopment())
 {

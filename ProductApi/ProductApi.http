@@ -1,30 +1,30 @@
 @ProductApi_HostAddress = http://localhost:5125
 
-### Crear un producto
+### Create a product
 POST {{ProductApi_HostAddress}}/api/products
 Content-Type: application/json
 
 {
-  "name": "Producto de Prueba",
+  "name": "Test Product",
   "status": 1,
   "stock": 100,
-  "description": "Descripción del producto de prueba",
+  "description": "Test product description",
   "price": 99.99
 }
 
-### Obtener un producto por ID
+### Get a product by ID
 GET {{ProductApi_HostAddress}}/api/products/1
 Accept: application/json
 
-### Actualizar un producto
+### Update a product
 PUT {{ProductApi_HostAddress}}/api/products/1
 Content-Type: application/json
 
 {
   "productId": 1,
-  "name": "Producto Actualizado",
+  "name": "Updated Product",
   "status": 1,
   "stock": 50,
-  "description": "Descripción actualizada",
+  "description": "Updated description",
   "price": 89.99
 }

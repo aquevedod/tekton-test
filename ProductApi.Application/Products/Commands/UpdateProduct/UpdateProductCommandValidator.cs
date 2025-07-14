@@ -26,4 +26,4 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
             .MaximumLength(300);
 
     }
-}
+} 

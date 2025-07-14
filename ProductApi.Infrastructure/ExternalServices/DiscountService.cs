@@ -22,8 +22,7 @@ public class DiscountService : IDiscountService
         _options = options.Value;
         _logger = logger;
         
-        // Log para diagnosticar qué valor se está tomando
-        _logger.LogInformation("DiscountService inicializado con BaseUrl: {BaseUrl}", _options.BaseUrl);
+        _logger.LogInformation("DiscountService initialized with BaseUrl: {BaseUrl}", _options.BaseUrl);
     }
 
     public async Task<decimal> GetDiscountByProductId(int productId)
@@ -31,7 +30,7 @@ public class DiscountService : IDiscountService
         try
         {
             var url = $"{_options.BaseUrl}/{productId}";
-            _logger.LogInformation("Haciendo request a: {Url}", url);
+            _logger.LogInformation("Making request to: {Url}", url);
             
             var response = await _httpClient.GetFromJsonAsync<DiscountResponse>(url);
 
@@ -39,7 +38,7 @@ public class DiscountService : IDiscountService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error al obtener descuento para el producto {ProductId} desde la API externa", productId);
+            _logger.LogError(ex, "Error getting discount for product {ProductId} from external API", productId);
             return 0;
         }
     }

@@ -1,0 +1,87 @@
+{
+  "info": {
+    "name": "ProductApi - ProductsController",
+    "_postman_id": "b1e1e1e1-1111-2222-3333-444455556666",
+    "description": "Collection of endpoints for ProductsController in ProductApi.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create product",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Sample product\",\n  \"statusName\": \"Active\",\n  \"stock\": 10,\n  \"description\": \"Sample description\",\n  \"price\": 100.0,\n  \"discount\": 0,\n  \"finalPrice\": 100.0\n}"
+        },
+        "url": {
+          "raw": "https://localhost:7050/api/products",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7050",
+          "path": [
+            "api",
+            "products"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get product by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://localhost:7050/api/products/1",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7050",
+          "path": [
+            "api",
+            "products",
+            "1"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Update product",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"productId\": 1,\n  \"name\": \"Updated product\",\n  \"statusName\": \"Inactive\",\n  \"stock\": 5,\n  \"description\": \"Updated description\",\n  \"price\": 120.0,\n  \"discount\": 10.0,\n  \"finalPrice\": 110.0\n}"
+        },
+        "url": {
+          "raw": "https://localhost:7050/api/products/1",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7050",
+          "path": [
+            "api",
+            "products",
+            "1"
+          ]
+        }
+      }
+    }
+  ]
+} 
