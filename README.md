@@ -207,8 +207,7 @@ dotnet test
 
 ### **Docker**
 ```bash
-docker build -t productapi .
-docker run -p 8080:80 productapi
+docker-compose up --build
 ```
 
 ## 🤝 Contribution
